@@ -112,6 +112,7 @@ int acceptRequest(char *buffer,int client) {
     
     if(url[strlen(url) - 1] == '/')
         strcat(url, "index.html");
+    sprintf(url, "www%s",url);
     FILE * file = fopen(url, "r");
     if(file == NULL) {
         notFound(client);
