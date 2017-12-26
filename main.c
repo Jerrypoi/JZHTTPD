@@ -7,17 +7,14 @@
 //
 
 #include <stdio.h>
-#include <sys/socket.h>//send , socket;
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>// sockaddr_in
-//#include <arpa/inet.h>
 #include <unistd.h> //write();
 #include <ctype.h>
 #include <strings.h>
 #include <string.h>
-//#include <sys/wait.h>
 #include <stdlib.h>
-//#include <stdint.h>
 #define SERVER_STRING "Server: Jerry's WEBSERVER Running JZHTTPD\r\n"
 int serverStartUp(u_int16_t *port);
 void errorDie(char * stirng);
@@ -88,7 +85,6 @@ void unimplemented(int client) {
     write(client, usingString, strlen(usingString));
     
 }
-//int acceptRequest(char * buffer,char * response);
 int acceptRequest(char *buffer,int client) {
     char url[255];
     char method[255];
@@ -120,6 +116,7 @@ int acceptRequest(char *buffer,int client) {
     }
     header(client, file);
     sendFile(client,file);
+    fclose(file);
     return 1;
 }
 
@@ -146,9 +143,10 @@ int serverStartUp(u_short *port) {
 }
 
 void errorDie(char * stirng) {
-    printf("%s failure!\n",stirng); //TODO: change to perror?
+    printf("%s failure!\n",stirng);
     exit(-1);
 }
+
 int main(int argc, const char * argv[]) {
     char *buffer;
     int buffLen = 1024 * sizeof(char);
@@ -160,10 +158,10 @@ int main(int argc, const char * argv[]) {
     printf("JZHTTPD running on %u\n",port);
     while(1) {
         int clientSocket = accept(serverSock,(struct sockaddr *)&client, &clientLen);
-        if(clientSocket < 0)
-            errorDie("Client socket");
         if(clientSocket > 0)
             printf("Client conneted\n");
+        else
+            continue;
         recv(clientSocket, buffer, buffLen, 0);
         printf("%s",buffer);
         acceptRequest(buffer,clientSocket);
