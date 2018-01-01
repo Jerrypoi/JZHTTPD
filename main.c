@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdlib.h>
 #define SERVER_STRING "Server: Jerry's WEBSERVER Running JZHTTPD\r\n"
+
 int serverStartUp(u_int16_t *port);
 void errorDie(char * stirng);
 void unimplemented(int client);
@@ -158,14 +159,21 @@ int main(int argc, const char * argv[]) {
     struct sockaddr_in client;
     socklen_t clientLen = sizeof(client);
     printf("JZHTTPD running on %u\n",port);
+    pid_t thread;
+    thread = fork();
+    if(thread < 0)
+        errorDie("Forking");
+    if(thread > 0)
+        exit(0);
     while(1) {
         int clientSocket = accept(serverSock,(struct sockaddr *)&client, &clientLen);
         if(clientSocket > 0)
-            printf("Client conneted\n");
+            //printf("Client conneted\n")
+            ;
         else
             continue;
         recv(clientSocket, buffer, buffLen, 0);
-        printf("%s",buffer);
+        //printf("%s",buffer);
         acceptRequest(buffer,clientSocket);
         close(clientSocket);
     }
