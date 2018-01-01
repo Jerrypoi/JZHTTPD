@@ -119,7 +119,6 @@ int acceptRequest(char *buffer,int client) {
     fclose(file);
     return 1;
 }
-
 int serverStartUp(u_short *port) {
     int createSocket = 0;
     struct sockaddr_in localhost;
@@ -133,6 +132,7 @@ int serverStartUp(u_short *port) {
     localhost.sin_port = htons(*port);
     if((setsockopt(createSocket, SOL_SOCKET, SO_REUSEADDR, &buff, sizeof(buff))) < 0)
         //setsockopt() manipulates the options associated with a socket.
+        
         errorDie("Setting sock opt");
     if(bind(createSocket, (struct sockaddr *)&localhost , sizeof(localhost)) < 0)
         errorDie("Binding");
@@ -151,8 +151,10 @@ int main(int argc, const char * argv[]) {
     char *buffer;
     int buffLen = 1024 * sizeof(char);
     buffer = malloc(buffLen);
+    
     u_short port = 15000;
     int serverSock = serverStartUp(&port);
+    
     struct sockaddr_in client;
     socklen_t clientLen = sizeof(client);
     printf("JZHTTPD running on %u\n",port);
